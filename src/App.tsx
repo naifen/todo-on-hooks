@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useReducer } from "react";
+import todoReducer from "./reducers/todoReducer";
+import filterReducer from "./reducers/filterReducer";
+import { TodoContext, initialTodos } from "./context";
+import Filter from "./components/Filter";
+import TodoList from "./components/TodoList";
+import AddTodo from "./components/AddTodo";
+import { TodoProps } from "./typeDefinitions";
 
-const App: React.FC = () => {
+const App = () => {
+  const [filter, dispatchFilter] = useReducer(filterReducer, "ALL");
+  const [todos, dispatchTodos] = useReducer(todoReducer, initialTodos);
+
+  const filteredTodos = todos.filter((todo: TodoProps) => {
+    if (filter === "ALL") return true;
+    if (filter === "COMPLETE") return todo.complete;
+    if (filter === "INCOMPLETE") return !todo.complete;
+
+    return false;
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <TodoContext.Provider value={dispatchTodos}>
+      <Filter dispatch={dispatchFilter} />
+      <TodoList todos={filteredTodos} />
+      <AddTodo />
+    </TodoContext.Provider>
   );
-}
+};
 
 export default App;
