@@ -6,8 +6,8 @@ import Filter from "./components/Filter";
 import TodoList from "./components/TodoList";
 import AddTodo from "./components/AddTodo";
 import { TodoProps } from "./typeDefinitions";
+import { todoCollectionUrl } from "./helpers";
 
-const url = "http://localhost:4000/todos";
 const initialTodo: TodoProps[] = [];
 
 const App: React.FC = () => {
@@ -16,17 +16,21 @@ const App: React.FC = () => {
 
   // inspired by https://stackoverflow.com/a/53146965/2214422
   const fetchData = async () => {
-    const response = await fetch(url);
-    const result = await response.json();
-    dispatchTodos({
-      type: "SET_TODOS",
-      payload: result
-    });
+    try {
+      const response = await fetch(todoCollectionUrl);
+      const result = await response.json();
+      dispatchTodos({
+        type: "SET_TODOS",
+        payload: result
+      });
+    } catch (err) {
+      console.log(err); // TODO better error handling, consider a reducer
+    }
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, []); // only fetch on component load
 
   const filteredTodos = todos.filter((todo: TodoProps) => {
     if (filter === "ALL") return true;

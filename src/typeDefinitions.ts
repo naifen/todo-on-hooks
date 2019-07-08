@@ -7,7 +7,6 @@ export interface TodoProps {
 export interface TodoAction {
     type: string;
     id?: string;
-    task?: string;
     payload: TodoProps[];
 }
 

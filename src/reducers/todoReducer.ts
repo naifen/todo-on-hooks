@@ -1,4 +1,3 @@
-import uuid from "uuid/v4";
 import { TodoProps, TodoAction } from "../typeDefinitions";
 
 const todoReducer = (state: TodoProps[], action: TodoAction) => {
@@ -20,11 +19,7 @@ const todoReducer = (state: TodoProps[], action: TodoAction) => {
         }
       });
     case "ADD_TODO":
-      return state.concat({
-        task: action.task,
-        id: uuid(),
-        complete: false
-      });
+      return state.concat(action.payload)
     case "SET_TODOS":
       return action.payload;
     default:
