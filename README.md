@@ -3,6 +3,7 @@ A simple TODO app made with React Hooks and Context. Use custom Reducer instead 
 ## To be implemented
 
 - [ ] Talk to external service for fetching and storing data.
+- [ ] Add more tests.
 - [ ] More sophisticated UI css style.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

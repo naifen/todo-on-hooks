@@ -1,13 +1,14 @@
 export interface TodoProps {
     id: string;
-    task: string;
+    task?: string;
     complete: boolean;
 }
 
 export interface TodoAction {
     type: string;
-    id: string;
-    task: string;
+    id?: string;
+    task?: string;
+    payload: TodoProps[];
 }
 
 export interface FilterProps {

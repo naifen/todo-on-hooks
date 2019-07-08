@@ -25,6 +25,8 @@ const todoReducer = (state: TodoProps[], action: TodoAction) => {
         id: uuid(),
         complete: false
       });
+    case "SET_TODOS":
+      return action.payload;
     default:
       throw new Error();
   }

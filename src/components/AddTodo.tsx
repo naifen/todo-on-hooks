@@ -5,9 +5,7 @@ const AddTodo: React.FC = () => {
   const dispatch = useContext(TodoContext);
   const [task, setTask] = useState("");
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    if (task) {
-      dispatch({ type: "ADD_TODO", task });
-    }
+    if (task) dispatch({ type: "ADD_TODO", task });
     setTask("");
     event.preventDefault();
   };

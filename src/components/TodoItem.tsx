@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { TodoContext } from "../context";
 import { TodoProps } from "../typeDefinitions";
 
-const TodoItem = ({ todo }: { todo: TodoProps }) => {
+const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
   const dispatch = useContext(TodoContext);
   const handleChange = () => {
     dispatch({
