@@ -1,38 +1,55 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import uuid from "uuid/v4";
 import { TodoContext } from "../context";
 import { todoCollectionUrl } from "../helpers";
+import { useNonInitRender } from "../customHooks";
 
 const AddTodo: React.FC = () => {
   const dispatch = useContext(TodoContext);
+  const nonInitRender = useNonInitRender();
   const [task, setTask] = useState("");
+  const todoInput = useRef<HTMLInputElement>(null);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (task) {
-      const todo = { task: task, id: uuid(), complete: false };
-      try {
-        const response = await fetch(todoCollectionUrl, {
-          method: "POST", // *GET, POST, PUT, DELETE, etc.
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(todo) // body todo type must match "Content-Type" header
-        });
-        if (response.status >= 200 && response.status < 300 && response.ok) {
-          dispatch({ type: "ADD_TODO", payload: todo });
-          setTask("");
-        } // TODO: handle other status code
-      } catch (err) {
-        console.log(err);
-      }
+  useEffect(() => {
+    let fetchCanceled = false;
+    if (nonInitRender) {
+      const addTodo = async () => {
+        const todo = { task: task, id: uuid(), complete: false };
+        try {
+          const response = await fetch(todoCollectionUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(todo)
+          });
+          if (
+            !fetchCanceled &&
+            response.status >= 200 &&
+            response.status < 300 &&
+            response.ok
+          ) {
+            dispatch({ type: "ADD_TODO", payload: todo });
+            todoInput.current!.value = "";
+          } // TODO: handle other status code
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      addTodo();
+
+      return () => {
+        fetchCanceled = true;
+      };
     }
-  };
+  }, [task]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setTask(event.target.value);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setTask(todoInput.current!.value);
+  };
 
   return (
     <form onSubmit={handleSubmit}>
-      <input type="text" value={task} onChange={handleChange} />
+      <input ref={todoInput} type="text" />
       <button type="submit">Add Todo</button>
     </form>
   );
