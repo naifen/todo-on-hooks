@@ -8,6 +8,7 @@ const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
   const dispatch = useContext(TodoContext);
   const nonInitRender = useNonInitRender();
   const [todoComplete, setTodoComplete] = useState(todo.complete);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     let fetchCanceled = false;
@@ -31,11 +32,13 @@ const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
               type: todo.complete ? "UNDO_TODO" : "DO_TODO",
               id: todo.id
             });
+            setIsLoading(false);
           } // TODO: handle other status code
         } catch (err) {
           console.log(err);
         }
       };
+      setIsLoading(true);
       updateTodo();
 
       return () => {
@@ -52,7 +55,7 @@ const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
           checked={todo.complete}
           onChange={() => setTodoComplete(!todo.complete)}
         />
-        {todo.task}
+        {todo.task} {isLoading && <span>Updating...</span>}
       </label>
     </li>
   );

@@ -9,6 +9,7 @@ const AddTodo: React.FC = () => {
   const nonInitRender = useNonInitRender();
   const [task, setTask] = useState("");
   const todoInput = useRef<HTMLInputElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     let fetchCanceled = false;
@@ -28,12 +29,14 @@ const AddTodo: React.FC = () => {
             response.ok
           ) {
             dispatch({ type: "ADD_TODO", payload: todo });
+            setIsLoading(false);
             todoInput.current!.value = "";
           } // TODO: handle other status code
         } catch (err) {
           console.log(err);
         }
       };
+      setIsLoading(true);
       addTodo();
 
       return () => {
@@ -50,7 +53,7 @@ const AddTodo: React.FC = () => {
   return (
     <form onSubmit={handleSubmit}>
       <input ref={todoInput} type="text" />
-      <button type="submit">Add Todo</button>
+      <button type="submit">{isLoading ? "Adding todo..." : "Add Todo"}</button>
     </form>
   );
 };
