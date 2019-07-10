@@ -17,3 +17,12 @@ export interface FilterProps {
 export interface FilterAction {
     type: string;
 }
+
+export interface FetchState {
+    isLoading: boolean;
+    isError: boolean;
+}
+
+export interface FetchAction {
+    type: string;
+}
