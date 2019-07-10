@@ -2,8 +2,9 @@ A simple TODO app made with React Hooks and Context. Use custom Reducer instead 
 
 ## To be implemented
 
-- [ ] Talk to external service for fetching and storing data.
-- [ ] Dev server console warning: "React Hook useEffect has missing dependencies"
+- [x] Talk to external service for fetching and storing data.
+- [ ] Delete todo, complete todos and update todo content.
+- [ ] Dev server console warning: "React Hook useEffect has missing dependencies".
 - [ ] Add more tests.
 - [ ] More sophisticated UI css style.
 

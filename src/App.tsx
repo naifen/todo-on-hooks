@@ -7,7 +7,7 @@ import Filter from "./components/Filter";
 import TodoList from "./components/TodoList";
 import AddTodo from "./components/AddTodo";
 import { TodoProps } from "./typeDefinitions";
-import { todoCollectionUrl } from "./helpers";
+import { todoCollectionUrl, fetchAndDispatch } from "./helpers";
 
 const initialTodo: TodoProps[] = [];
 
@@ -23,31 +23,15 @@ const App: React.FC = () => {
     // a flag used to abort a api call if component unmounted or with AbortController:
     // https://developer.mozilla.org/en-US/docs/Web/API/AbortController
     let fetchCanceled = false;
-    const fetchData = async () => {
-      dispatchFetchStatus({ type: "FETCH_INIT" });
-      try {
-        const response = await fetch(todoCollectionUrl);
-        const result = await response.json();
-
-        if (
-          !fetchCanceled && // avoid updating state if component unmounted
-          response.status >= 200 &&
-          response.status < 300 &&
-          response.ok
-        ) {
-          dispatchFetchStatus({ type: "FETCH_SUCCESS" });
-          dispatchTodos({
-            type: "SET_TODOS",
-            payload: result
-          });
-        } else {
-          dispatchFetchStatus({ type: "FETCH_FAILURE" });
-        }
-      } catch (err) {
-        console.log(err);
-        dispatchFetchStatus({ type: "FETCH_FAILURE" });
+    const fetchData = fetchAndDispatch(
+      { endpoint: todoCollectionUrl, method: "GET" },
+      { statusDispatch: dispatchFetchStatus, cancelFlag: fetchCanceled },
+      {
+        dispatch: dispatchTodos,
+        action: { type: "SET_TODOS" },
+        asyncData: true
       }
-    };
+    );
     fetchData();
 
     return () => {

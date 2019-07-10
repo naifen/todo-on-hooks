@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import uuid from "uuid/v4";
 import { TodoContext } from "../context";
-import { todoCollectionUrl } from "../helpers";
+import { todoCollectionUrl, fetchAndDispatch } from "../helpers";
 import { useNonInitRender } from "../customHooks";
 import fetchStatusReducer from "../reducers/fetchStatusReducer";
 
@@ -24,32 +24,17 @@ const AddTodo: React.FC = () => {
   useEffect(() => {
     let fetchCanceled = false;
     if (nonInitRender) {
-      const addTodo = async () => {
-        dispatchFetchStatus({ type: "FETCH_INIT" });
-        const todo = { task: task, id: uuid(), complete: false };
-        try {
-          const response = await fetch(todoCollectionUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(todo)
-          });
-          if (
-            !fetchCanceled &&
-            response.status >= 200 &&
-            response.status < 300 &&
-            response.ok
-          ) {
-            dispatchFetchStatus({ type: "FETCH_SUCCESS" });
-            dispatch({ type: "ADD_TODO", payload: todo });
-            todoInput.current!.value = "";
-          } else {
-            dispatchFetchStatus({ type: "FETCH_FAILURE" });
-          }
-        } catch (err) {
-          console.log(err);
-          dispatchFetchStatus({ type: "FETCH_FAILURE" });
-        }
-      };
+      const todo = { task: task, id: uuid(), complete: false };
+      const addTodo = fetchAndDispatch(
+        { endpoint: todoCollectionUrl, method: "POST", data: todo },
+        { statusDispatch: dispatchFetchStatus, cancelFlag: fetchCanceled },
+        {
+          dispatch: dispatch,
+          action: { type: "ADD_TODO", payload: todo },
+          asyncData: false
+        },
+        () => (todoInput.current!.value = "")
+      );
       addTodo();
 
       return () => {
