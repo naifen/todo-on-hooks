@@ -6,8 +6,7 @@ export interface TodoProps {
 
 export interface TodoAction {
     type: string;
-    id?: string;
-    payload: TodoProps[];
+    payload: TodoProps[] | { id: string };
 }
 
 export interface FilterProps {

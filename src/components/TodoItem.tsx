@@ -25,7 +25,7 @@ const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
           dispatch: dispatch,
           action: {
             type: todo.complete ? "UNDO_TODO" : "DO_TODO",
-            id: todo.id
+            payload: { id: todo.id }
           },
           asyncData: false
         }
