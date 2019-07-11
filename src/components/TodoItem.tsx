@@ -26,7 +26,7 @@ const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
             type: todo.complete ? "UNDO_TODO" : "DO_TODO",
             payload: { id: todo.id }
           },
-          asyncData: false
+          isAsyncData: false
         }
       );
       makeRequest();

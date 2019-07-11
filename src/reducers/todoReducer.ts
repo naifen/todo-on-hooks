@@ -19,7 +19,7 @@ const todoReducer = (state: TodoProps[], action: TodoAction) => {
         }
       });
     case "ADD_TODO":
-      return state.concat(action.payload as TodoProps[])
+      return state.concat(action.payload as TodoProps[]);
     case "SET_TODOS":
       return action.payload as TodoProps[];
     default:

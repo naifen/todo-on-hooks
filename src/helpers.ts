@@ -1,14 +1,14 @@
 export const todoCollectionUrl: string = "http://localhost:4000/todos";
 
-export const todoUrl: (id: string) => string = (id) => {
-    return `http://localhost:4000/todos/${id}`;
-}
+export const todoUrl: (id: string) => string = id => {
+  return `http://localhost:4000/todos/${id}`;
+};
 
 const createFetchOptions = (method: string, data?: {}) => {
-  const defaultOptions = { headers: { "Content-Type": "application/json" }};
+  const defaultOptions = { headers: { "Content-Type": "application/json" } };
   let options: {};
-  if (method === 'GET' || method === 'DELETE') {
-    options = {...defaultOptions, method: method };
+  if (method === "GET" || method === "DELETE") {
+    options = { ...defaultOptions, method: method };
   } else {
     options = {
       ...defaultOptions,
@@ -18,14 +18,19 @@ const createFetchOptions = (method: string, data?: {}) => {
   }
 
   return options;
-}
+};
 
 export const fetchAndDispatch = (
   apiOptions: { endpoint: string, method: string, data?: {} },
   fetchHandler: { statusDispatch: React.Dispatch<any> },
-  stateHandler: { dispatch: React.Dispatch<any>, action: {}, asyncData: boolean },
+  stateHandler: {
+    dispatch: React.Dispatch<any>;
+    action: {};
+    isAsyncData: boolean;
+  },
   successCallBack?: () => void,
-  errorCallBack?: () => void) => {
+  errorCallBack?: () => void
+) => {
   const fetchOptions = createFetchOptions(apiOptions.method, apiOptions.data);
   let fetchCanceled = false;
 
@@ -42,7 +47,7 @@ export const fetchAndDispatch = (
         response.ok
       ) {
         fetchHandler.statusDispatch({ type: "FETCH_SUCCESS" });
-        if (stateHandler.asyncData) {
+        if (stateHandler.isAsyncData) {
           stateHandler.dispatch({ ...stateHandler.action, payload: result });
         } else {
           stateHandler.dispatch(stateHandler.action);
@@ -56,9 +61,9 @@ export const fetchAndDispatch = (
       console.log(JSON.stringify(err));
       fetchHandler.statusDispatch({ type: "FETCH_FAILURE" });
     }
-  }
+  };
 
   const setFetchCancellation = (canceled: boolean) => fetchCanceled = canceled;
 
   return { makeRequest, setFetchCancellation };
-}
+};

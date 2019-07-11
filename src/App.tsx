@@ -28,7 +28,7 @@ const App: React.FC = () => {
       {
         dispatch: dispatchTodos,
         action: { type: "SET_TODOS" },
-        asyncData: true
+        isAsyncData: true
       }
     );
     makeRequest();

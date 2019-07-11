@@ -30,7 +30,7 @@ const AddTodo: React.FC = () => {
         {
           dispatch: dispatch,
           action: { type: "ADD_TODO", payload: todo },
-          asyncData: false
+          isAsyncData: false
         },
         () => (todoInput.current!.value = "")
       );
