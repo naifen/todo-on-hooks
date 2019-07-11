@@ -22,20 +22,21 @@ const createFetchOptions = (method: string, data?: {}) => {
 
 export const fetchAndDispatch = (
   apiOptions: { endpoint: string, method: string, data?: {} },
-  fetchHandler: { statusDispatch: React.Dispatch<any>, isCanceled: boolean },
+  fetchHandler: { statusDispatch: React.Dispatch<any> },
   stateHandler: { dispatch: React.Dispatch<any>, action: {}, asyncData: boolean },
   successCallBack?: () => void,
   errorCallBack?: () => void) => {
   const fetchOptions = createFetchOptions(apiOptions.method, apiOptions.data);
+  let fetchCanceled = false;
 
-  return async () => {
+  const makeRequest = async () => {
     fetchHandler.statusDispatch({ type: "FETCH_INIT" });
     try {
       const response = await fetch(apiOptions.endpoint, fetchOptions);
       const result = await response.json();
 
-      if ( // TODO: passing cancelFlag as closure may not prevent setState on unmounted
-        !fetchHandler.isCanceled && // avoid updating state if component unmounted
+      if (
+        !fetchCanceled && // avoid updating state if component unmounted
         response.status >= 200 &&
         response.status < 300 &&
         response.ok
@@ -56,4 +57,8 @@ export const fetchAndDispatch = (
       fetchHandler.statusDispatch({ type: "FETCH_FAILURE" });
     }
   }
+
+  const setFetchCancellation = (canceled: boolean) => fetchCanceled = canceled;
+
+  return { makeRequest, setFetchCancellation };
 }

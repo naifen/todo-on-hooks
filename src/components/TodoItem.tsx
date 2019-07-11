@@ -15,12 +15,11 @@ const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
   });
 
   useEffect(() => {
-    let fetchCanceled = false;
     if (nonInitRender) {
       const data = { ...todo, complete: todoComplete };
-      const updateTodo = fetchAndDispatch(
+      const { makeRequest, setFetchCancellation } = fetchAndDispatch(
         { endpoint: todoUrl(todo.id), method: "PUT", data: data },
-        { statusDispatch: dispatchFetchStatus, isCanceled: fetchCanceled },
+        { statusDispatch: dispatchFetchStatus },
         {
           dispatch: dispatch,
           action: {
@@ -30,10 +29,10 @@ const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
           asyncData: false
         }
       );
-      updateTodo();
+      makeRequest();
 
       return () => {
-        fetchCanceled = true;
+        setFetchCancellation(true);
       };
     }
   }, [todoComplete]);

@@ -22,20 +22,19 @@ const App: React.FC = () => {
   useEffect(() => {
     // a flag used to abort a api call if component unmounted or with AbortController:
     // https://developer.mozilla.org/en-US/docs/Web/API/AbortController
-    let fetchCanceled = false;
-    const fetchData = fetchAndDispatch(
+    const { makeRequest, setFetchCancellation } = fetchAndDispatch(
       { endpoint: todoCollectionUrl, method: "GET" },
-      { statusDispatch: dispatchFetchStatus, isCanceled: fetchCanceled },
+      { statusDispatch: dispatchFetchStatus },
       {
         dispatch: dispatchTodos,
         action: { type: "SET_TODOS" },
         asyncData: true
       }
     );
-    fetchData();
+    makeRequest();
 
     return () => {
-      fetchCanceled = true;
+      setFetchCancellation(true);
     };
   }, []); // only perform initial fetch on component mounted
 

@@ -22,12 +22,11 @@ const AddTodo: React.FC = () => {
   });
 
   useEffect(() => {
-    let fetchCanceled = false;
     if (nonInitRender) {
       const todo = { task: task, id: uuid(), complete: false };
-      const addTodo = fetchAndDispatch(
+      const { makeRequest, setFetchCancellation } = fetchAndDispatch(
         { endpoint: todoCollectionUrl, method: "POST", data: todo },
-        { statusDispatch: dispatchFetchStatus, isCanceled: fetchCanceled },
+        { statusDispatch: dispatchFetchStatus },
         {
           dispatch: dispatch,
           action: { type: "ADD_TODO", payload: todo },
@@ -35,10 +34,10 @@ const AddTodo: React.FC = () => {
         },
         () => (todoInput.current!.value = "")
       );
-      addTodo();
+      makeRequest();
 
       return () => {
-        fetchCanceled = true;
+        setFetchCancellation(true);
       };
     }
   }, [task]); // perform side effect on task changes.
