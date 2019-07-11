@@ -1,13 +1,12 @@
 export interface TodoProps {
     id: string;
-    task: string;
+    task?: string;
     complete: boolean;
 }
 
 export interface TodoAction {
     type: string;
-    id: string;
-    task: string;
+    payload: TodoProps[] | { id: string };
 }
 
 export interface FilterProps {
@@ -15,5 +14,14 @@ export interface FilterProps {
 }
 
 export interface FilterAction {
+    type: string;
+}
+
+export interface FetchState {
+    isLoading: boolean;
+    isError: boolean;
+}
+
+export interface FetchAction {
     type: string;
 }

@@ -2,15 +2,9 @@ import React from "react";
 import { FilterProps } from "../typeDefinitions";
 
 const Filter: React.FC<FilterProps> = ({ dispatch }) => {
-  const handleShowAll = () => {
-    dispatch({ type: "SHOW_ALL" });
-  };
-  const handleShowComplete = () => {
-    dispatch({ type: "SHOW_COMPLETE" });
-  };
-  const handleShowIncomplete = () => {
-    dispatch({ type: "SHOW_INCOMPLETE" });
-  };
+  const handleShowAll = () => dispatch({ type: "SHOW_ALL" });
+  const handleShowComplete = () => dispatch({ type: "SHOW_COMPLETE" });
+  const handleShowIncomplete = () => dispatch({ type: "SHOW_INCOMPLETE" });
 
   return (
     <div>

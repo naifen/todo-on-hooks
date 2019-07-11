@@ -1,15 +1,41 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect, useReducer } from "react";
 import { TodoContext } from "../context";
 import { TodoProps } from "../typeDefinitions";
+import { todoUrl, fetchAndDispatch } from "../helpers";
+import { useNonInitRender } from "../customHooks";
+import fetchStatusReducer from "../reducers/fetchStatusReducer";
 
-const TodoItem = ({ todo }: { todo: TodoProps }) => {
+const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
   const dispatch = useContext(TodoContext);
-  const handleChange = () => {
-    dispatch({
-      type: todo.complete ? "UNDO_TODO" : "DO_TODO",
-      id: todo.id
-    });
-  };
+  const nonInitRender = useNonInitRender();
+  const [todoComplete, setTodoComplete] = useState(todo.complete);
+  const [fetchStatus, dispatchFetchStatus] = useReducer(fetchStatusReducer, {
+    isLoading: false,
+    isError: false
+  });
+
+  useEffect(() => {
+    if (nonInitRender) {
+      const data = { ...todo, complete: todoComplete };
+      const { makeRequest, setFetchCancellation } = fetchAndDispatch(
+        { endpoint: todoUrl(todo.id), method: "PUT", data: data },
+        { statusDispatch: dispatchFetchStatus },
+        {
+          dispatch: dispatch,
+          action: {
+            type: todo.complete ? "UNDO_TODO" : "DO_TODO",
+            payload: { id: todo.id }
+          },
+          asyncData: false
+        }
+      );
+      makeRequest();
+
+      return () => {
+        setFetchCancellation(true);
+      };
+    }
+  }, [todoComplete]);
 
   return (
     <li>
@@ -17,9 +43,12 @@ const TodoItem = ({ todo }: { todo: TodoProps }) => {
         <input
           type="checkbox"
           checked={todo.complete}
-          onChange={handleChange}
+          onChange={() => setTodoComplete(!todo.complete)}
         />
-        {todo.task}
+        {todo.task} {fetchStatus.isLoading && <span>Updating...</span>}{" "}
+        {fetchStatus.isError && (
+          <span>An error has occurred, please try again....</span>
+        )}
       </label>
     </li>
   );

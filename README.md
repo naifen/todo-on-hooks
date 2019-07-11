@@ -1,8 +1,16 @@
 A simple TODO app made with React Hooks and Context. Use custom Reducer instead of Redux.
 
+## Usage
+
+- install foreman by running `gem install foreman` and json-server by running `yarn add json-server`
+- run `foreman start -f Procfile.dev` a json-server will be running which React app talks to. Data are store in app root dir `db.json` file.
+
 ## To be implemented
 
-- [ ] Talk to external service for fetching and storing data.
+- [x] Talk to external service for fetching and storing data.
+- [ ] Delete todo, complete todos and update todo content.
+- [ ] Dev server console warning: "React Hook useEffect has missing dependencies".
+- [ ] Add unit and integration tests.
 - [ ] More sophisticated UI css style.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

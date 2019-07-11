@@ -1,15 +1,42 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useEffect } from "react";
 import todoReducer from "./reducers/todoReducer";
 import filterReducer from "./reducers/filterReducer";
-import { TodoContext, initialTodos } from "./context";
+import fetchStatusReducer from "./reducers/fetchStatusReducer";
+import { TodoContext } from "./context";
 import Filter from "./components/Filter";
 import TodoList from "./components/TodoList";
 import AddTodo from "./components/AddTodo";
 import { TodoProps } from "./typeDefinitions";
+import { todoCollectionUrl, fetchAndDispatch } from "./helpers";
 
-const App = () => {
+const initialTodo: TodoProps[] = [];
+
+const App: React.FC = () => {
+  const [todos, dispatchTodos] = useReducer(todoReducer, initialTodo);
   const [filter, dispatchFilter] = useReducer(filterReducer, "ALL");
-  const [todos, dispatchTodos] = useReducer(todoReducer, initialTodos);
+  const [fetchStatus, dispatchFetchStatus] = useReducer(fetchStatusReducer, {
+    isLoading: false,
+    isError: false
+  });
+
+  useEffect(() => {
+    // a flag used to abort a api call if component unmounted or with AbortController:
+    // https://developer.mozilla.org/en-US/docs/Web/API/AbortController
+    const { makeRequest, setFetchCancellation } = fetchAndDispatch(
+      { endpoint: todoCollectionUrl, method: "GET" },
+      { statusDispatch: dispatchFetchStatus },
+      {
+        dispatch: dispatchTodos,
+        action: { type: "SET_TODOS" },
+        asyncData: true
+      }
+    );
+    makeRequest();
+
+    return () => {
+      setFetchCancellation(true);
+    };
+  }, []); // only perform initial fetch on component mounted
 
   const filteredTodos = todos.filter((todo: TodoProps) => {
     if (filter === "ALL") return true;
@@ -22,7 +49,14 @@ const App = () => {
   return (
     <TodoContext.Provider value={dispatchTodos}>
       <Filter dispatch={dispatchFilter} />
-      <TodoList todos={filteredTodos} />
+      {fetchStatus.isError && (
+        <p>An error has occurred, please refresh page and try again...</p>
+      )}
+      {fetchStatus.isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <TodoList todos={filteredTodos} />
+      )}
       <AddTodo />
     </TodoContext.Provider>
   );
