@@ -19,14 +19,14 @@ const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
       const data = { ...todo, complete: todoComplete };
       const { makeRequest, setFetchCancellation } = fetchAndDispatch(
         { endpoint: todoUrl(todo.id), method: "PUT", data: data },
-        { statusDispatch: dispatchFetchStatus },
+        { dispatch: dispatchFetchStatus },
         {
           dispatch: dispatch,
           action: {
             type: todo.complete ? "UNDO_TODO" : "DO_TODO",
             payload: { id: todo.id }
           },
-          asyncData: false
+          isAsyncData: false
         }
       );
       makeRequest();
