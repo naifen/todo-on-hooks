@@ -1,4 +1,4 @@
-A simple TODO app made with React Hooks and Context. Use custom Reducer instead of Redux.
+A todo app built with React Hooks, Context API in pure functional components. Implement custom hooks, reducers with similar concepts in Redux.
 
 ## Usage
 

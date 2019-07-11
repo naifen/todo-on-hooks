@@ -26,7 +26,7 @@ const AddTodo: React.FC = () => {
       const todo = { task: task, id: uuid(), complete: false };
       const { makeRequest, setFetchCancellation } = fetchAndDispatch(
         { endpoint: todoCollectionUrl, method: "POST", data: todo },
-        { statusDispatch: dispatchFetchStatus },
+        { dispatch: dispatchFetchStatus },
         {
           dispatch: dispatch,
           action: { type: "ADD_TODO", payload: todo },

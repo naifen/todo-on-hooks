@@ -22,7 +22,7 @@ const createFetchOptions = (method: string, data?: {}) => {
 
 export const fetchAndDispatch = (
   apiOptions: { endpoint: string, method: string, data?: {} },
-  fetchHandler: { statusDispatch: React.Dispatch<any> },
+  fetchStatusHandler: { dispatch: React.Dispatch<any> },
   stateHandler: {
     dispatch: React.Dispatch<any>;
     action: {};
@@ -32,10 +32,11 @@ export const fetchAndDispatch = (
   errorCallBack?: () => void
 ) => {
   const fetchOptions = createFetchOptions(apiOptions.method, apiOptions.data);
-  let fetchCanceled = false;
+  let fetchCanceled = false; // fetch cancellation flag
+  // AbortController is another option: https://developer.mozilla.org/en-US/docs/Web/API/AbortControlle
 
   const makeRequest = async () => {
-    fetchHandler.statusDispatch({ type: "FETCH_INIT" });
+    fetchStatusHandler.dispatch({ type: "FETCH_INIT" });
     try {
       const response = await fetch(apiOptions.endpoint, fetchOptions);
       const result = await response.json();
@@ -46,7 +47,7 @@ export const fetchAndDispatch = (
         response.status < 300 &&
         response.ok
       ) {
-        fetchHandler.statusDispatch({ type: "FETCH_SUCCESS" });
+        fetchStatusHandler.dispatch({ type: "FETCH_SUCCESS" });
         if (stateHandler.isAsyncData) {
           stateHandler.dispatch({ ...stateHandler.action, payload: result });
         } else {
@@ -54,12 +55,12 @@ export const fetchAndDispatch = (
         }
         if (successCallBack) successCallBack();
       } else {
-        fetchHandler.statusDispatch({ type: "FETCH_FAILURE" });
+        fetchStatusHandler.dispatch({ type: "FETCH_FAILURE" });
         if (errorCallBack) errorCallBack();
       }
     } catch (err) {
       console.log(JSON.stringify(err));
-      fetchHandler.statusDispatch({ type: "FETCH_FAILURE" });
+      fetchStatusHandler.dispatch({ type: "FETCH_FAILURE" });
     }
   };
 
