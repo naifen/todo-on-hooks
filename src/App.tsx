@@ -25,7 +25,7 @@ const App: React.FC = () => {
     let fetchCanceled = false;
     const fetchData = fetchAndDispatch(
       { endpoint: todoCollectionUrl, method: "GET" },
-      { statusDispatch: dispatchFetchStatus, cancelFlag: fetchCanceled },
+      { statusDispatch: dispatchFetchStatus, isCanceled: fetchCanceled },
       {
         dispatch: dispatchTodos,
         action: { type: "SET_TODOS" },

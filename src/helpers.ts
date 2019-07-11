@@ -4,32 +4,38 @@ export const todoUrl: (id: string) => string = (id) => {
     return `http://localhost:4000/todos/${id}`;
 }
 
-export const fetchAndDispatch = (
-  fetchOptions: { endpoint: string, method: string, data?: {} },
-  fetchHandler: { statusDispatch: React.Dispatch<any>, cancelFlag: boolean },
-  stateHandler: { dispatch: React.Dispatch<any>, action: {}, asyncData: boolean },
-  successCallBack?: () => void,
-  errorCallBack?: () => void) => {
+const createFetchOptions = (method: string, data?: {}) => {
   const defaultOptions = { headers: { "Content-Type": "application/json" }};
   let options: {};
-  if (fetchOptions.method === 'GET' || fetchOptions.method === 'DELETE') {
-    options = {...defaultOptions, method: fetchOptions.method };
+  if (method === 'GET' || method === 'DELETE') {
+    options = {...defaultOptions, method: method };
   } else {
     options = {
       ...defaultOptions,
-      method: fetchOptions.method,
-      body: JSON.stringify(fetchOptions.data)
+      method: method,
+      body: JSON.stringify(data)
     };
   }
+
+  return options;
+}
+
+export const fetchAndDispatch = (
+  apiOptions: { endpoint: string, method: string, data?: {} },
+  fetchHandler: { statusDispatch: React.Dispatch<any>, isCanceled: boolean },
+  stateHandler: { dispatch: React.Dispatch<any>, action: {}, asyncData: boolean },
+  successCallBack?: () => void,
+  errorCallBack?: () => void) => {
+  const fetchOptions = createFetchOptions(apiOptions.method, apiOptions.data);
 
   return async () => {
     fetchHandler.statusDispatch({ type: "FETCH_INIT" });
     try {
-      const response = await fetch(fetchOptions.endpoint, options);
+      const response = await fetch(apiOptions.endpoint, fetchOptions);
       const result = await response.json();
 
-      if ( // TODO: passing cancelFlag as closure might not prevent setState on unmounted
-        !fetchHandler.cancelFlag && // avoid updating state if component unmounted
+      if ( // TODO: passing cancelFlag as closure may not prevent setState on unmounted
+        !fetchHandler.isCanceled && // avoid updating state if component unmounted
         response.status >= 200 &&
         response.status < 300 &&
         response.ok

@@ -20,7 +20,7 @@ const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
       const data = { ...todo, complete: todoComplete };
       const updateTodo = fetchAndDispatch(
         { endpoint: todoUrl(todo.id), method: "PUT", data: data },
-        { statusDispatch: dispatchFetchStatus, cancelFlag: fetchCanceled },
+        { statusDispatch: dispatchFetchStatus, isCanceled: fetchCanceled },
         {
           dispatch: dispatch,
           action: {
