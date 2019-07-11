@@ -1,5 +1,10 @@
 A simple TODO app made with React Hooks and Context. Use custom Reducer instead of Redux.
 
+## Usage
+
+- install foreman by running `gem install foreman` and json-server by running `yarn add json-server`
+- run `foreman start -f Procfile.dev` a json-server will be running which React app talks to. Data are store in app root dir `db.json` file.
+
 ## To be implemented
 
 - [x] Talk to external service for fetching and storing data.
