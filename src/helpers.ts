@@ -20,8 +20,8 @@ const createFetchOptions = (method: string, data?: {}) => {
   return options;
 };
 
+// TODO: this API is ugly, also make naming more intuitive, and add tests for components and logic
 export const fetchAndDispatch = (
-  apiOptions: { endpoint: string, method: string, data?: {} },
   fetchStatusHandler: { dispatch: React.Dispatch<any> },
   stateHandler: {
     dispatch: React.Dispatch<any>;
@@ -31,11 +31,10 @@ export const fetchAndDispatch = (
   successCallBack?: () => void,
   errorCallBack?: () => void
 ) => {
-  const fetchOptions = createFetchOptions(apiOptions.method, apiOptions.data);
   let fetchCanceled = false; // fetch cancellation flag
-  // AbortController is another option: https://developer.mozilla.org/en-US/docs/Web/API/AbortControlle
 
-  const makeRequest = async () => {
+  const makeRequest = async (apiOptions: { endpoint: string, method: string, data?: {} }) => {
+    const fetchOptions = createFetchOptions(apiOptions.method, apiOptions.data);
     fetchStatusHandler.dispatch({ type: "FETCH_INIT" });
     try {
       const response = await fetch(apiOptions.endpoint, fetchOptions);

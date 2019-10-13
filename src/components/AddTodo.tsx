@@ -25,7 +25,6 @@ const AddTodo: React.FC = () => {
     if (nonInitRender) {
       const todo = { task: task, id: uuid(), complete: false };
       const { makeRequest, setFetchCancellation } = fetchAndDispatch(
-        { endpoint: todoCollectionUrl, method: "POST", data: todo },
         { dispatch: dispatchFetchStatus },
         {
           dispatch: dispatch,
@@ -34,13 +33,17 @@ const AddTodo: React.FC = () => {
         },
         () => (todoInput.current!.value = "")
       );
-      makeRequest();
+      makeRequest({ endpoint: todoCollectionUrl, method: "POST", data: todo });
 
       return () => {
         setFetchCancellation(true);
       };
     }
   }, [task]); // perform side effect on task changes.
+  // FIXME:
+  // Warning: React Hook useEffect has missing dependencies: 'dispatch',
+  //'nonInitRender'. Either include them or remove the dependency
+  // array  react-hooks/exhaustive-dep
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

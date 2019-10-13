@@ -21,7 +21,6 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const { makeRequest, setFetchCancellation } = fetchAndDispatch(
-      { endpoint: todoCollectionUrl, method: "GET" },
       { dispatch: dispatchFetchStatus },
       {
         dispatch: dispatchTodos,
@@ -29,7 +28,7 @@ const App: React.FC = () => {
         isAsyncData: true
       }
     );
-    makeRequest();
+    makeRequest({ endpoint: todoCollectionUrl, method: "GET" });
 
     return () => {
       setFetchCancellation(true);

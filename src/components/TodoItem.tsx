@@ -18,7 +18,6 @@ const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
     if (nonInitRender) {
       const data = { ...todo, complete: todoComplete };
       const { makeRequest, setFetchCancellation } = fetchAndDispatch(
-        { endpoint: todoUrl(todo.id), method: "PUT", data: data },
         { dispatch: dispatchFetchStatus },
         {
           dispatch: dispatch,
@@ -29,14 +28,19 @@ const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
           isAsyncData: false
         }
       );
-      makeRequest();
+      makeRequest({ endpoint: todoUrl(todo.id), method: "PUT", data: data });
 
       return () => {
         setFetchCancellation(true);
       };
     }
   }, [todoComplete]);
+  // FIXME:
+  // Warning: React Hook useEffect has missing dependencies: 'dispatch',
+  //'nonInitRender', and 'todo'. Either include them or remove the dependency
+  // array  react-hooks/exhaustive-deps
 
+  // TODO: remove and update todo content inline
   return (
     <li>
       <label>
