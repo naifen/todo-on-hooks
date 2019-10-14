@@ -23,7 +23,7 @@
     {
       "task": "Refactor the fetchAndDispatch API",
       "id": "399e3ac6-564f-4727-bc84-8734056a90ff",
-      "complete": false
+      "complete": true
     }
   ]
 }

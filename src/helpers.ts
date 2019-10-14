@@ -20,8 +20,14 @@ const createFetchOptions = (method: string, data?: {}) => {
   return options;
 };
 
+interface ApiOptionProps {
+  endpoint: string,
+  method: string,
+  data?: {}
+}
+
 // TODO: this API is ugly, also make naming more intuitive, and add tests for components and logic
-export const fetchAndDispatch = (
+export const createFetchAndStateHandlers = (
   fetchStatusHandler: { dispatch: React.Dispatch<any> },
   localStateHandler: {
     dispatch: React.Dispatch<any>;
@@ -33,7 +39,8 @@ export const fetchAndDispatch = (
 ) => {
   let fetchCanceled = false; // fetch cancellation flag
 
-  const makeRequest = async (apiOptions: { endpoint: string, method: string, data?: {} }) => {
+  // call external API and set local state with async data or local data
+  const fetchAndDispatch = async (apiOptions: ApiOptionProps) => {
     const fetchOptions = createFetchOptions(apiOptions.method, apiOptions.data);
     fetchStatusHandler.dispatch({ type: "FETCH_INIT" });
     try {
@@ -53,7 +60,6 @@ export const fetchAndDispatch = (
             payload: result
           });
         } else {
-          // FIXME: move this logic to top level before fetch begins
           localStateHandler.dispatch(localStateHandler.action);
         }
         if (successCallBack) successCallBack();
@@ -62,12 +68,12 @@ export const fetchAndDispatch = (
         if (errorCallBack) errorCallBack();
       }
     } catch (err) {
-      console.log(JSON.stringify(err));
+      console.log(JSON.stringify(err)); // TODO: better error handling
       fetchStatusHandler.dispatch({ type: "FETCH_FAILURE" });
     }
   };
 
   const setFetchCancellation = (canceled: boolean) => fetchCanceled = canceled;
 
-  return { makeRequest, setFetchCancellation };
+  return { fetchAndDispatch, setFetchCancellation };
 };

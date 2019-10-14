@@ -7,7 +7,7 @@ import Filter from "./components/Filter";
 import TodoList from "./components/TodoList";
 import AddTodo from "./components/AddTodo";
 import { TodoProps } from "./typeDefinitions";
-import { todoCollectionUrl, fetchAndDispatch } from "./helpers";
+import { todoCollectionUrl, createFetchAndStateHandlers } from "./helpers";
 
 const initialTodo: TodoProps[] = [];
 
@@ -20,7 +20,10 @@ const App: React.FC = () => {
   });
 
   useEffect(() => {
-    const { makeRequest, setFetchCancellation } = fetchAndDispatch(
+    const {
+      fetchAndDispatch,
+      setFetchCancellation
+    } = createFetchAndStateHandlers(
       { dispatch: dispatchFetchStatus },
       {
         dispatch: dispatchTodos,
@@ -28,7 +31,7 @@ const App: React.FC = () => {
         isAsyncData: true
       }
     );
-    makeRequest({ endpoint: todoCollectionUrl, method: "GET" });
+    fetchAndDispatch({ endpoint: todoCollectionUrl, method: "GET" });
 
     return () => {
       setFetchCancellation(true);

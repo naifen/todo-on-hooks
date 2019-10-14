@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useReducer } from "react";
 import { TodoContext } from "../context";
 import { TodoProps } from "../typeDefinitions";
-import { todoUrl, fetchAndDispatch } from "../helpers";
+import { todoUrl, createFetchAndStateHandlers } from "../helpers";
 import { useNonInitRender } from "../customHooks";
 import fetchStatusReducer from "../reducers/fetchStatusReducer";
 
@@ -17,7 +17,10 @@ const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
   useEffect(() => {
     if (nonInitRender) {
       const data = { ...todo, complete: todoComplete };
-      const { makeRequest, setFetchCancellation } = fetchAndDispatch(
+      const {
+        fetchAndDispatch,
+        setFetchCancellation
+      } = createFetchAndStateHandlers(
         { dispatch: dispatchFetchStatus },
         {
           dispatch: dispatchTodo,
@@ -28,7 +31,11 @@ const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
           isAsyncData: false
         }
       );
-      makeRequest({ endpoint: todoUrl(todo.id), method: "PUT", data: data });
+      fetchAndDispatch({
+        endpoint: todoUrl(todo.id),
+        method: "PUT",
+        data: data
+      });
 
       return () => {
         setFetchCancellation(true);

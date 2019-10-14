@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import uuid from "uuid/v4";
 import { TodoContext } from "../context";
-import { todoCollectionUrl, fetchAndDispatch } from "../helpers";
+import { todoCollectionUrl, createFetchAndStateHandlers } from "../helpers";
 import { useNonInitRender } from "../customHooks";
 import fetchStatusReducer from "../reducers/fetchStatusReducer";
 
@@ -24,7 +24,10 @@ const AddTodo: React.FC = () => {
   useEffect(() => {
     if (nonInitRender) {
       const todo = { task: task, id: uuid(), complete: false };
-      const { makeRequest, setFetchCancellation } = fetchAndDispatch(
+      const {
+        fetchAndDispatch,
+        setFetchCancellation
+      } = createFetchAndStateHandlers(
         { dispatch: dispatchFetchStatus },
         {
           dispatch: dispatchTodo,
@@ -33,7 +36,11 @@ const AddTodo: React.FC = () => {
         },
         () => (todoInput.current!.value = "")
       );
-      makeRequest({ endpoint: todoCollectionUrl, method: "POST", data: todo });
+      fetchAndDispatch({
+        endpoint: todoCollectionUrl,
+        method: "POST",
+        data: todo
+      });
 
       return () => {
         setFetchCancellation(true);
