@@ -2,20 +2,23 @@ import React, { useContext, useState, useEffect, useReducer } from "react";
 import { TodoContext } from "../context";
 import { TodoProps } from "../typeDefinitions";
 import { todoUrl, createFetchAndStateHandlers } from "../helpers";
-import { useNonInitRender } from "../customHooks";
+import { useInitialRender } from "../customHooks";
 import fetchStatusReducer from "../reducers/fetchStatusReducer";
 
 const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
   const dispatchTodo = useContext(TodoContext);
-  const nonInitRender = useNonInitRender();
+  const initialRender = useInitialRender();
   const [todoComplete, setTodoComplete] = useState(todo.complete);
   const [fetchStatus, dispatchFetchStatus] = useReducer(fetchStatusReducer, {
     isLoading: false,
     isError: false
   });
 
+  // b/c the todo property is an object and JS see it as a new one every time TodoItem
+  // receive props which triggers re-render and useEffect hook trigger which causes
+  // data fetch, the useInitialRender custom hook is to prevent this from happening
   useEffect(() => {
-    if (nonInitRender) {
+    if (!initialRender) {
       const data = { ...todo, complete: todoComplete };
       const {
         fetchAndDispatch,
@@ -44,7 +47,7 @@ const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
   }, [todoComplete]);
   // FIXME:
   // Warning: React Hook useEffect has missing dependencies: 'dispatch',
-  //'nonInitRender', and 'todo'. Either include them or remove the dependency
+  //'initialRender', and 'todo'. Either include them or remove the dependency
   // array  react-hooks/exhaustive-deps
 
   // TODO: remove and update todo content inline

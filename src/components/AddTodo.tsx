@@ -8,12 +8,12 @@ import React, {
 import uuid from "uuid/v4";
 import { TodoContext } from "../context";
 import { todoCollectionUrl, createFetchAndStateHandlers } from "../helpers";
-import { useNonInitRender } from "../customHooks";
+import { useInitialRender } from "../customHooks";
 import fetchStatusReducer from "../reducers/fetchStatusReducer";
 
 const AddTodo: React.FC = () => {
   const dispatchTodo = useContext(TodoContext);
-  const nonInitRender = useNonInitRender();
+  const initialRender = useInitialRender();
   const [task, setTask] = useState("");
   const todoInput = useRef<HTMLInputElement>(null);
   const [fetchStatus, dispatchFetchStatus] = useReducer(fetchStatusReducer, {
@@ -22,7 +22,7 @@ const AddTodo: React.FC = () => {
   });
 
   useEffect(() => {
-    if (nonInitRender) {
+    if (!initialRender) {
       const todo = { task: task, id: uuid(), complete: false };
       const {
         fetchAndDispatch,
@@ -49,7 +49,7 @@ const AddTodo: React.FC = () => {
   }, [task]); // perform side effect on task changes.
   // FIXME:
   // Warning: React Hook useEffect has missing dependencies: 'dispatch',
-  //'nonInitRender'. Either include them or remove the dependency
+  //'initialRender'. Either include them or remove the dependency
   // array  react-hooks/exhaustive-dep
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
