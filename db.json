@@ -19,6 +19,11 @@
       "task": "Fix useEffect warning",
       "id": "ef962693-e0f9-40e6-a4f0-9037c9a711ea",
       "complete": false
+    },
+    {
+      "task": "Refactor the fetchAndDispatch API",
+      "id": "399e3ac6-564f-4727-bc84-8734056a90ff",
+      "complete": false
     }
   ]
 }

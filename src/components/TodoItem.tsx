@@ -6,7 +6,7 @@ import { useNonInitRender } from "../customHooks";
 import fetchStatusReducer from "../reducers/fetchStatusReducer";
 
 const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
-  const dispatch = useContext(TodoContext);
+  const dispatchTodo = useContext(TodoContext);
   const nonInitRender = useNonInitRender();
   const [todoComplete, setTodoComplete] = useState(todo.complete);
   const [fetchStatus, dispatchFetchStatus] = useReducer(fetchStatusReducer, {
@@ -20,7 +20,7 @@ const TodoItem: React.FC<{ todo: TodoProps }> = ({ todo }) => {
       const { makeRequest, setFetchCancellation } = fetchAndDispatch(
         { dispatch: dispatchFetchStatus },
         {
-          dispatch: dispatch,
+          dispatch: dispatchTodo,
           action: {
             type: todo.complete ? "UNDO_TODO" : "DO_TODO",
             payload: { id: todo.id }

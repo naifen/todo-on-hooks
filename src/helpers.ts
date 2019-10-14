@@ -23,7 +23,7 @@ const createFetchOptions = (method: string, data?: {}) => {
 // TODO: this API is ugly, also make naming more intuitive, and add tests for components and logic
 export const fetchAndDispatch = (
   fetchStatusHandler: { dispatch: React.Dispatch<any> },
-  stateHandler: {
+  localStateHandler: {
     dispatch: React.Dispatch<any>;
     action: {};
     isAsyncData: boolean;
@@ -47,10 +47,14 @@ export const fetchAndDispatch = (
         response.ok
       ) {
         fetchStatusHandler.dispatch({ type: "FETCH_SUCCESS" });
-        if (stateHandler.isAsyncData) {
-          stateHandler.dispatch({ ...stateHandler.action, payload: result });
+        if (localStateHandler.isAsyncData) {
+          localStateHandler.dispatch({
+            ...localStateHandler.action,
+            payload: result
+          });
         } else {
-          stateHandler.dispatch(stateHandler.action);
+          // FIXME: move this logic to top level before fetch begins
+          localStateHandler.dispatch(localStateHandler.action);
         }
         if (successCallBack) successCallBack();
       } else {

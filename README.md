@@ -1,4 +1,4 @@
-A todo app built with React Hooks, Context API in pure functional components. Implement custom hooks, reducers with similar concepts in Redux.
+A todo app built with React Hooks, Context API in pure functional components. Implement custom hooks, reducers for data fetching. Inspired by the concepts of Redux.
 
 ## Usage
 

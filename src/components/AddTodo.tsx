@@ -12,7 +12,7 @@ import { useNonInitRender } from "../customHooks";
 import fetchStatusReducer from "../reducers/fetchStatusReducer";
 
 const AddTodo: React.FC = () => {
-  const dispatch = useContext(TodoContext);
+  const dispatchTodo = useContext(TodoContext);
   const nonInitRender = useNonInitRender();
   const [task, setTask] = useState("");
   const todoInput = useRef<HTMLInputElement>(null);
@@ -27,7 +27,7 @@ const AddTodo: React.FC = () => {
       const { makeRequest, setFetchCancellation } = fetchAndDispatch(
         { dispatch: dispatchFetchStatus },
         {
-          dispatch: dispatch,
+          dispatch: dispatchTodo,
           action: { type: "ADD_TODO", payload: todo },
           isAsyncData: false
         },
